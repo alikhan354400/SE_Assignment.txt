@@ -1,1 +1,76 @@
 import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Calculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double num1, num2, result;
+        char operator;
+        boolean continueCalculation = true;
+
+        while (continueCalculation) {
+            try {
+                System.out.print("Enter the first number: ");
+                num1 = getValidNumber(scanner);
+
+                System.out.print("Enter the operator (+, -, *, /): ");
+                operator = getValidOperator(scanner);
+
+                System.out.print("Enter the second number: ");
+                num2 = getValidNumber(scanner);
+
+                result = performOperation(num1, num2, operator);
+                System.out.println("Result: " + result);
+
+                System.out.print("Do you want to perform another calculation? (yes/no): ");
+                continueCalculation = scanner.next().equalsIgnoreCase("yes");
+
+            } catch (InputMismatchException | ArithmeticException e) {
+                System.out.println("Error: " + e.getMessage());
+                scanner.nextLine(); // Clear the input buffer
+            }
+        }
+        scanner.close();
+        System.out.println("Thank you for using the calculator!");
+    }
+
+    private static double getValidNumber(Scanner scanner) {
+        while (true) {
+            try {
+                return scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                System.out.print("Invalid input. Please enter a valid number: ");
+                scanner.next(); // Clear invalid input
+            }
+        }
+    }
+
+    private static char getValidOperator(Scanner scanner) {
+        while (true) {
+            char operator = scanner.next().charAt(0);
+            if (operator == '+' || operator == '-' || operator == '*' || operator == '/') {
+                return operator;
+            } else {
+                System.out.print("Invalid operator. Please enter one of (+, -, *, /): ");
+            }
+        }
+    }
+
+    private static double performOperation(double num1, double num2, char operator) {
+        switch (operator) {
+            case '+':
+                return num1 + num2;
+            case '-':
+                return num1 - num2;
+            case '*':
+                return num1 * num2;
+            case '/':
+                if (num2 == 0) {
+                    throw new ArithmeticException("Division by zero is not allowed.");
+                }
+                return num1 / num2;
+            default:
+                throw new IllegalStateException("Unexpected operator: " + operator);
+        }
+    }
+}
